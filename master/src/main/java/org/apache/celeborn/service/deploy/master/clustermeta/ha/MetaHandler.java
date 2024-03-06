@@ -219,8 +219,9 @@ public class MetaHandler {
           userResourceConsumption =
               MetaUtil.fromPbUserResourceConsumption(
                   request.getRegisterWorkerRequest().getUserResourceConsumptionMap());
+          String networkLocation = request.getNetworkLocation();
           LOG.debug(
-              "Handle worker register for {} {} {} {} {} {} {} {}",
+              "Handle worker register for {} {} {} {} {} {} {} {} {}",
               host,
               rpcPort,
               pushPort,
@@ -228,7 +229,8 @@ public class MetaHandler {
               replicatePort,
               internalPort,
               diskInfos,
-              userResourceConsumption);
+              userResourceConsumption,
+              networkLocation);
           metaSystem.updateRegisterWorkerMeta(
               host,
               rpcPort,
@@ -237,7 +239,8 @@ public class MetaHandler {
               replicatePort,
               internalPort,
               diskInfos,
-              userResourceConsumption);
+              userResourceConsumption,
+              networkLocation);
           break;
 
         case ReportWorkerUnavailable:

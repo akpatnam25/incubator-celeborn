@@ -412,6 +412,7 @@ private[celeborn] class Master(
       val fetchPort = pbRegisterWorker.getFetchPort
       val replicatePort = pbRegisterWorker.getReplicatePort
       val internalPort = pbRegisterWorker.getInternalPort
+      val networkLocation = pbRegisterWorker.getNetworkLocation
       val disks = pbRegisterWorker.getDisksList.asScala
         .map { pbDiskInfo => pbDiskInfo.getMountPoint -> PbSerDeUtils.fromPbDiskInfo(pbDiskInfo) }
         .toMap.asJava
@@ -432,7 +433,8 @@ private[celeborn] class Master(
           internalPort,
           disks,
           userResourceConsumption,
-          requestId))
+          requestId,
+          networkLocation))
 
     case ReleaseSlots(_, _, _, _, _) =>
       // keep it for compatible reason
@@ -714,7 +716,8 @@ private[celeborn] class Master(
       internalPort: Int,
       disks: util.Map[String, DiskInfo],
       userResourceConsumption: util.Map[UserIdentifier, ResourceConsumption],
-      requestId: String): Unit = {
+      requestId: String,
+      networkLocation: String): Unit = {
     val workerToRegister =
       new WorkerInfo(
         host,
@@ -740,7 +743,8 @@ private[celeborn] class Master(
         internalPort,
         disks,
         userResourceConsumption,
-        newRequestId)
+        newRequestId,
+        networkLocation)
       context.reply(RegisterWorkerResponse(true, "Worker in snapshot, re-register."))
     } else if (statusSystem.workerLostEvents.contains(workerToRegister)) {
       logWarning(s"Receive RegisterWorker while worker $workerToRegister " +
@@ -755,7 +759,8 @@ private[celeborn] class Master(
         internalPort,
         disks,
         userResourceConsumption,
-        requestId)
+        requestId,
+        networkLocation)
       context.reply(RegisterWorkerResponse(true, "Worker in workerLostEvents, re-register."))
     } else {
       statusSystem.handleRegisterWorker(
@@ -767,7 +772,8 @@ private[celeborn] class Master(
         internalPort,
         disks,
         userResourceConsumption,
-        requestId)
+        requestId,
+        networkLocation)
       logInfo(s"Registered worker $workerToRegister.")
       context.reply(RegisterWorkerResponse(true, ""))
     }

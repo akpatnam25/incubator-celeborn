@@ -294,7 +294,8 @@ public class HAMasterMetaManager extends AbstractMetaManager {
       int internalPort,
       Map<String, DiskInfo> disks,
       Map<UserIdentifier, ResourceConsumption> userResourceConsumption,
-      String requestId) {
+      String requestId,
+      String networkLocation) {
     try {
       ratisServer.submitRequest(
           ResourceRequest.newBuilder()
@@ -308,6 +309,7 @@ public class HAMasterMetaManager extends AbstractMetaManager {
                       .setFetchPort(fetchPort)
                       .setReplicatePort(replicatePort)
                       .setInternalPort(internalPort)
+                      .setNetworkLocation(networkLocation)
                       .putAllDisks(MetaUtil.toPbDiskInfos(disks))
                       .putAllUserResourceConsumption(
                           MetaUtil.toPbUserResourceConsumption(userResourceConsumption))

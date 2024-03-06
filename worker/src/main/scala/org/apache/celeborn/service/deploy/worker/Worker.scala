@@ -278,6 +278,17 @@ private[celeborn] class Worker(
       diskInfos,
       JavaUtils.newConcurrentHashMap[UserIdentifier, ResourceConsumption])
 
+  val networkLocation = {
+    if (conf.workerNetworkLocationProvider.nonEmpty && Utils.classIsLoadable(conf.workerNetworkLocationProvider)) {
+      val clazz = Utils.classForName(conf.workerNetworkLocationProvider)
+      if (clazz.isAssignableFrom(classOf[NetworkLocationProvider])) {
+        val getNetworkLocation = clazz.getDeclaredMethod("getNetworkLocation")
+        getNetworkLocation.invoke(clazz.newInstance()).asInstanceOf[String]
+      }
+    }
+    ""
+  }
+
   // whether this Worker registered to Master successfully
   val registered = new AtomicBoolean(false)
   val shuffleMapperAttempts: ConcurrentHashMap[String, AtomicIntegerArray] =
@@ -567,7 +578,8 @@ private[celeborn] class Worker(
               // StorageManager have update the disk info.
               workerInfo.diskInfos.asScala.toMap,
               handleResourceConsumption().asScala.toMap,
-              MasterClient.genRequestId()),
+              MasterClient.genRequestId(),
+              networkLocation),
             classOf[PbRegisterWorkerResponse])
         } catch {
           case throwable: Throwable =>

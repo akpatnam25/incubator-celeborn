@@ -75,7 +75,8 @@ public interface IMetadataHandler {
       int internalPort,
       Map<String, DiskInfo> disks,
       Map<UserIdentifier, ResourceConsumption> userResourceConsumption,
-      String requestId);
+      String requestId,
+      String networkLocation);
 
   void handleReportWorkerUnavailable(List<WorkerInfo> failedNodes, String requestId);
 

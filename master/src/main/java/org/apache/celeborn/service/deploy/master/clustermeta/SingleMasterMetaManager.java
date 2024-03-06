@@ -138,7 +138,8 @@ public class SingleMasterMetaManager extends AbstractMetaManager {
       int internalPort,
       Map<String, DiskInfo> disks,
       Map<UserIdentifier, ResourceConsumption> userResourceConsumption,
-      String requestId) {
+      String requestId,
+      String networkLocation) {
     updateRegisterWorkerMeta(
         host,
         rpcPort,
@@ -147,7 +148,8 @@ public class SingleMasterMetaManager extends AbstractMetaManager {
         replicatePort,
         internalPort,
         disks,
-        userResourceConsumption);
+        userResourceConsumption,
+        networkLocation);
   }
 
   @Override
