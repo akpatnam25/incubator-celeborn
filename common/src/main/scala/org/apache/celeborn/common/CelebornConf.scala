@@ -720,7 +720,6 @@ class CelebornConf(loadDefaults: Boolean) extends Cloneable with Logging with Se
   def workerJvmQuakeRuntimeWeight: Double = get(WORKER_JVM_QUAKE_RUNTIME_WEIGHT)
   def workerJvmQuakeDumpEnabled: Boolean = get(WORKER_JVM_QUAKE_DUMP_ENABLED)
   def workerJvmQuakeDumpPath: String = get(WORKER_JVM_QUAKE_DUMP_PATH)
-  def workerNetworkLocationProvider: String = get(WORKER_NETWORK_LOCATION_PROVIDER)
 
   def workerJvmQuakeDumpThreshold: Duration =
     getTimeAsMs(
@@ -4629,12 +4628,4 @@ object CelebornConf extends Logging {
       .version("0.5.0")
       .intConf
       .createWithDefault(8)
-
-  val WORKER_NETWORK_LOCATION_PROVIDER: ConfigEntry[String] =
-    buildConf("celeborn.worker.network.location.provider")
-      .categories("worker")
-      .doc("Java fqdn pointing to a custom network location provider to use for replication.")
-      .version("0.5.0")
-      .stringConf
-      .createWithDefaultString("")
 }

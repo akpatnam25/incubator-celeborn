@@ -32,7 +32,6 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.apache.celeborn.common.network.CelebornRackResolver;
 import scala.Tuple2;
 
 import org.apache.hadoop.net.NetworkTopology;
@@ -45,6 +44,7 @@ import org.apache.celeborn.common.meta.DiskInfo;
 import org.apache.celeborn.common.meta.WorkerInfo;
 import org.apache.celeborn.common.protocol.PartitionLocation;
 import org.apache.celeborn.common.protocol.StorageInfo;
+import org.apache.celeborn.service.deploy.master.network.CelebornRackResolver;
 
 public class SlotsAllocatorRackAwareSuiteJ {
 

@@ -240,11 +240,7 @@ public abstract class AbstractMetaManager implements IMetadataHandler {
             disks,
             userResourceConsumption);
     workerInfo.lastHeartbeat_$eq(System.currentTimeMillis());
-    if (networkLocation == null || networkLocation.isEmpty()) {
-      workerInfo.networkLocation_$eq(rackResolver.resolve(host).getNetworkLocation());
-    } else {
-      workerInfo.networkLocation_$eq(networkLocation);
-    }
+    workerInfo.networkLocation_$eq(networkLocation);
     workerInfo.updateDiskMaxSlots(estimatedPartitionSize);
     synchronized (workers) {
       if (!workers.contains(workerInfo)) {
