@@ -33,6 +33,8 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.stream.Collectors;
 
+import org.apache.celeborn.common.network.CelebornRackResolver;
+import org.apache.hadoop.net.NetworkTopology;
 import scala.Option;
 
 import org.apache.hadoop.net.Node;
@@ -57,7 +59,6 @@ import org.apache.celeborn.common.util.JavaUtils;
 import org.apache.celeborn.common.util.PbSerDeUtils;
 import org.apache.celeborn.common.util.Utils;
 import org.apache.celeborn.common.util.WorkerStatusUtils;
-import org.apache.celeborn.service.deploy.master.network.CelebornRackResolver;
 
 public abstract class AbstractMetaManager implements IMetadataHandler {
   private static final Logger LOG = LoggerFactory.getLogger(AbstractMetaManager.class);
@@ -334,9 +335,12 @@ public abstract class AbstractMetaManager implements IMetadataHandler {
           workerInfoSet.stream()
               .peek(
                   workerInfo -> {
-                    // Reset worker's network location with current master's configuration.
-                    workerInfo.networkLocation_$eq(
-                        resolveMap.get(workerInfo.host()).get().getNetworkLocation());
+                    // Reset worker's network location with current master's configuration
+                    // if set to the DEFAULT_RACK upon snapshot restore.
+                    if (workerInfo.networkLocation().equals(NetworkTopology.DEFAULT_RACK)) {
+                      workerInfo.networkLocation_$eq(
+                          resolveMap.get(workerInfo.host()).get().getNetworkLocation());
+                    }
                   })
               .collect(Collectors.toSet()));
 

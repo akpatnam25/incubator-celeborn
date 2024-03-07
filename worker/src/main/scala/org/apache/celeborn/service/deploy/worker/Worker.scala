@@ -20,15 +20,12 @@ package org.apache.celeborn.service.deploy.worker
 import java.io.File
 import java.lang.{Long => JLong}
 import java.util
-import java.util.{HashMap => JHashMap, HashSet => JHashSet, Locale, Map => JMap}
+import java.util.{Locale, HashMap => JHashMap, HashSet => JHashSet, Map => JMap}
 import java.util.concurrent._
 import java.util.concurrent.atomic.{AtomicBoolean, AtomicIntegerArray}
-
 import scala.collection.JavaConverters._
-
 import com.google.common.annotations.VisibleForTesting
 import io.netty.util.HashedWheelTimer
-
 import org.apache.celeborn.common.CelebornConf
 import org.apache.celeborn.common.CelebornConf._
 import org.apache.celeborn.common.client.MasterClient
@@ -38,7 +35,7 @@ import org.apache.celeborn.common.internal.Logging
 import org.apache.celeborn.common.meta.{DiskInfo, WorkerInfo, WorkerPartitionLocationInfo}
 import org.apache.celeborn.common.metrics.MetricsSystem
 import org.apache.celeborn.common.metrics.source.{JVMCPUSource, JVMSource, ResourceConsumptionSource, SystemMiscSource, ThreadPoolSource}
-import org.apache.celeborn.common.network.TransportContext
+import org.apache.celeborn.common.network.{CelebornRackResolver, TransportContext}
 import org.apache.celeborn.common.network.sasl.SaslServerBootstrap
 import org.apache.celeborn.common.network.sasl.SecretRegistryImpl
 import org.apache.celeborn.common.network.server.TransportServerBootstrap
@@ -278,16 +275,8 @@ private[celeborn] class Worker(
       diskInfos,
       JavaUtils.newConcurrentHashMap[UserIdentifier, ResourceConsumption])
 
-  val networkLocation = {
-    if (conf.workerNetworkLocationProvider.nonEmpty && Utils.classIsLoadable(conf.workerNetworkLocationProvider)) {
-      val clazz = Utils.classForName(conf.workerNetworkLocationProvider)
-      if (clazz.isAssignableFrom(classOf[NetworkLocationProvider])) {
-        val getNetworkLocation = clazz.getDeclaredMethod("getNetworkLocation")
-        getNetworkLocation.invoke(clazz.newInstance()).asInstanceOf[String]
-      }
-    }
-    ""
-  }
+  private val rackResolver = new CelebornRackResolver(conf)
+  private val networkLocation = rackResolver.resolve(host).getNetworkLocation
 
   // whether this Worker registered to Master successfully
   val registered = new AtomicBoolean(false)

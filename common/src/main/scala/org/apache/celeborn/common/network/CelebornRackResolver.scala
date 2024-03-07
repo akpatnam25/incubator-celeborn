@@ -15,23 +15,21 @@
  * limitations under the License.
  */
 
-package org.apache.celeborn.service.deploy.master.network
-
-import java.io.File
-import java.util.concurrent.{ScheduledExecutorService, TimeUnit}
-
-import scala.collection.JavaConverters._
-import scala.collection.mutable.ArrayBuffer
+package org.apache.celeborn.common.network
 
 import com.google.common.base.Strings
-import org.apache.hadoop.conf.Configuration
-import org.apache.hadoop.fs.CommonConfigurationKeysPublic
-import org.apache.hadoop.net.{CachedDNSToSwitchMapping, DNSToSwitchMapping, NetworkTopology, Node, NodeBase, ScriptBasedMapping, TableMapping}
-import org.apache.hadoop.util.ReflectionUtils
-
 import org.apache.celeborn.common.CelebornConf
 import org.apache.celeborn.common.internal.Logging
 import org.apache.celeborn.common.util.{CelebornHadoopUtils, ThreadUtils}
+import org.apache.hadoop.conf.Configuration
+import org.apache.hadoop.fs.CommonConfigurationKeysPublic
+import org.apache.hadoop.net._
+import org.apache.hadoop.util.ReflectionUtils
+
+import java.io.File
+import java.util.concurrent.{ScheduledExecutorService, TimeUnit}
+import scala.collection.JavaConverters._
+import scala.collection.mutable.ArrayBuffer
 
 class CelebornRackResolver(celebornConf: CelebornConf) extends Logging {
 

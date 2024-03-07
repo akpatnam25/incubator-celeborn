@@ -39,6 +39,7 @@ import org.apache.celeborn.common.meta.{DiskInfo, WorkerInfo, WorkerStatus}
 import org.apache.celeborn.common.metrics.MetricsSystem
 import org.apache.celeborn.common.metrics.source.{JVMCPUSource, JVMSource, ResourceConsumptionSource, SystemMiscSource, ThreadPoolSource}
 import org.apache.celeborn.common.network.protocol.TransportMessage
+import org.apache.celeborn.common.network.CelebornRackResolver
 import org.apache.celeborn.common.protocol._
 import org.apache.celeborn.common.protocol.message.{ControlMessages, StatusCode}
 import org.apache.celeborn.common.protocol.message.ControlMessages._
@@ -49,7 +50,6 @@ import org.apache.celeborn.common.util.{CelebornHadoopUtils, CollectionUtils, Ja
 import org.apache.celeborn.server.common.{HttpService, Service}
 import org.apache.celeborn.service.deploy.master.clustermeta.SingleMasterMetaManager
 import org.apache.celeborn.service.deploy.master.clustermeta.ha.{HAHelper, HAMasterMetaManager, MetaHandler}
-import org.apache.celeborn.service.deploy.master.network.CelebornRackResolver
 import org.apache.celeborn.service.deploy.master.quota.QuotaManager
 
 private[celeborn] class Master(
